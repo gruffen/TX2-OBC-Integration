@@ -3,13 +3,14 @@
 static struct termios uartdev;
 int uart0_filestream = -1;
 
-int openSerial() {
+int openSerial(char* devName) {
   int err;
-  uart0_filestream = open("/dev/ttyAMA0", O_RDWR | O_NDELAY | O_NONBLOCK); // /dev/ttyAMA0 on rpi, ttyTHS1 on jetson
+  uart0_filestream = open(devName, O_RDWR | O_NDELAY | O_NONBLOCK); // /dev/ttyAMA0 on rpi, ttyTHS1 on jetson
   if (uart0_filestream == -1) {
     std::cout << "Error: unable to open UART.\n";
     clean_exit(-1);
   } else {
+    std::cout << "Opened terminal " << devName <<"!\n";
     fcntl(uart0_filestream, F_SETFL, 0);
   }
 
@@ -28,7 +29,8 @@ int openSerial() {
 	tcflush(uart0_filestream, TCIFLUSH);
 	tcsetattr(uart0_filestream, TCSANOW, &uartdev);
 
-  std::cout << uart0_filestream << std::endl;
+  //std::cout << uart0_filestream << std::endl;
+  //sdfsdf sdfsdffsdfsdf
 
   return uart0_filestream;
 }
@@ -43,7 +45,7 @@ int read_uart(int fd, char *buf, size_t nbBytes) {
     } else if (count == 0) {
       // No data to be read
     } else {
-      // print bytes read
+     std::cout << buf;
     }
   }
   return count;
@@ -56,7 +58,7 @@ int write_uart(int fd, char *buf, size_t nbytes) {
   tcflush(STDIN_FILENO, TCIFLUSH);
 
   int count = 0;
-  std::cout << "Sending to device..";
+  std::cout << "Sending to device...\n";
   if (fd != -1) {
     count = write(fd, &buf[0], nbytes);
     if (count < 0 ) {
@@ -64,8 +66,9 @@ int write_uart(int fd, char *buf, size_t nbytes) {
       return -1;
     }
   }
-  std::cout << "Successfully written\n";
-  return count;
+  std::cout << "Successfully written!\n";
+  std::cout << "Bytes written: " << count << std::endl;
+	return count;
 }
 
 void clean_exit(int code) {

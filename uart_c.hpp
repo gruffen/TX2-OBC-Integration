@@ -10,7 +10,7 @@
 #include <sys/signal.h>
 #include <cstdlib>
 
-int openSerial();
+int openSerial(char* devName);
 int read_uart(int fd, char *buf, size_t nbBytes);
 int write_uart(int fd, char *buf, size_t nbytes);
 void clean_exit(int code);
